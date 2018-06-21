@@ -13,6 +13,17 @@
     (fn [apply*]
       (fn [map*]
         (fn [f]
-          (fn [array]
-            (let [acc ((map* list) (f (last array)))
-                  result (atom nil)])))))))
+          (letfn [(build-from [x ys]
+                    ((apply* ((map* cons-list) (f x))) ys))
+                  (go [acc curr-len xs]
+                      (if (zero? curr-len)
+                        acc
+                        (let [last* (nth xs (dec curr-len))]
+                          (Cont (fn []
+                                  (go (build-from last* acc) (dec curr-len) xs))))))]
+            (fn [array]
+              (let [acc ((map* list) (f (last array)))
+                    result (atom (go acc (count array) array))]
+                (while (= :Cont (:type @result))
+                  (reset! result ((:fn @result))))
+                ((map* vec) @result)))))))))

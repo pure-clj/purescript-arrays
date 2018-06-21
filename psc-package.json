@@ -1,0 +1,24 @@
+{
+    "name": "purescript-arrays",
+    "set": "clj-0.1.0",
+    "source": "https://github.com/pure-clj/package-sets.git",
+    "depends": [
+        "prelude",
+        "bifunctors",
+        "control",
+        "foldable-traversable",
+        "maybe",
+        "nonempty",
+        "partial",
+        "prelude",
+        "st",
+        "tailrec",
+        "tuples",
+        "unfoldable",
+        "unsafe-coerce",
+
+        "assert",
+        "console",
+        "const"
+    ]
+}
