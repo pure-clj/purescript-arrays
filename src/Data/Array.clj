@@ -13,7 +13,14 @@
 
 (defn range [start]
   (fn [end]
-    (vec (clojure.core/range start (inc end)))))
+    (let [inv? (> start end)
+          [s e] (if inv?
+                  [end start]
+                  [start end])
+          res (c/range s (inc e))]
+      (if inv?
+        (vec (c/reverse res))
+        (vec res)))))
 
 (defn replicate [count*]
   (fn [value]
