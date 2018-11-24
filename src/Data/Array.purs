@@ -779,7 +779,7 @@ takeWhile p xs = (span p xs).init
 -- |
 foreign import drop :: forall a. Int -> Array a -> Array a
 
--- | Drop a number of elements from the start of an array, creating a new array.
+-- | Drop a number of elements from the end of an array, creating a new array.
 -- |
 -- | ```purescript
 -- | letters = ["a", "b", "c", "d"]
@@ -866,8 +866,8 @@ groupBy op xs =
     iter <- STAI.iterator (xs !! _)
     STAI.iterate iter \x -> void do
       sub <- STA.empty
-      STAI.pushWhile (op x) iter sub
       _ <- STA.push x sub
+      STAI.pushWhile (op x) iter sub
       grp <- STA.unsafeFreeze sub
       STA.push ((unsafeCoerce :: Array ~> NonEmptyArray) grp) result
     STA.unsafeFreeze result
