@@ -1,6 +1,6 @@
 {
     "name": "purescript-arrays",
-    "set": "clj-0.1.0",
+    "set": "clj-0.2.0",
     "source": "https://github.com/pure-clj/package-sets.git",
     "depends": [
         "prelude",
