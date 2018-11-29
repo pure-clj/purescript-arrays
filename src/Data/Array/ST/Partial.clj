@@ -3,11 +3,12 @@
 
 (defn peekImpl [i]
   (fn [xs]
-    (fn []
+    (fn [& _]
       (.get xs i))))
 
 (defn pokeImpl [i]
   (fn [a]
     (fn [xs]
-      (fn []
-        (.set xs i a)))))
+      (fn [& _]
+        (.set xs i a)
+        {}))))

@@ -34,8 +34,8 @@ import Unsafe.Coerce (unsafeCoerce)
 -- | The first type parameter represents the memory region which the array belongs to.
 -- | The second type parameter defines the type of elements of the mutable array.
 -- |
--- | The runtime representation of a value of type `STArray h a` is the same as that of `Array a`,
--- | except that mutation is allowed.
+-- | The runtime representation of a value of type `STArray h a` is not the same as that of `Array a`.
+-- | `STArray` is a `java.util.ArrayList` while `Array` is a Clojure persistent vector.
 foreign import data STArray :: Region -> Type -> Type
 
 -- | An element and its index.
@@ -53,15 +53,15 @@ withArray f xs = do
   _ <- f result
   unsafeFreeze result
 
--- | O(1). Convert a mutable array to an immutable array, without copying. The mutable
--- | array must not be mutated afterwards.
+-- | Cannot use unsafeCoerce in Clojure as `Array`s and `STArray`s
+-- | are different classes
 unsafeFreeze :: forall h a. STArray h a -> ST h (Array a)
-unsafeFreeze = pure <<< (unsafeCoerce :: STArray h a -> Array a)
+unsafeFreeze = copyBackImpl
 
--- | O(1) Convert an immutable array to a mutable array, without copying. The input
--- | array must not be used afterward.
+-- | Cannot use unsafeCoerce in Clojure as `Array`s and `STArray`s
+-- | are different classes
 unsafeThaw :: forall h a. Array a -> ST h (STArray h a)
-unsafeThaw = pure <<< (unsafeCoerce :: Array a -> STArray h a)
+unsafeThaw = copyImpl
 
 -- | Create an empty mutable array.
 foreign import empty :: forall h a. ST h (STArray h a)
@@ -104,9 +104,11 @@ sortWith f = sortBy (comparing f)
 
 -- | Create an immutable copy of a mutable array.
 freeze :: forall h a. STArray h a -> ST h (Array a)
-freeze = copyImpl
+freeze = copyBackImpl
 
 foreign import copyImpl :: forall h a b. a -> ST h b
+
+foreign import copyBackImpl :: forall h a b. a -> ST h b
 
 -- | Read the value at the specified index in a mutable array.
 peek

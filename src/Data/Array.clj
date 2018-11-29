@@ -90,13 +90,14 @@
     (fn [i]
       (fn [a]
         (fn [xs]
-          (if (> (count xs) i -1)
+          (if (or (neg? i)
+                  (> i (count xs)))
+            nothing
             (as-> xs x
                  (split-at i x)
                  (c/concat (first x) [a] (second x))
                  (vec x)
-                 (just x))
-            nothing))))))
+                 (just x))))))))
 
 (defn _deleteAt [just]
   (fn [nothing]
